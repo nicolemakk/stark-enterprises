@@ -1,0 +1,10 @@
+import "tfplan"
+
+main = rule {
+  all tfplan.resources.fakewebservices_database as _, db {
+    all db.attributes.size as _, db_size {
+      db_size >= 100 else
+        fail(sprintf("The database size must be at least 100GB, but it is set to '%s'.", instance_type))
+    }
+  }
+}

@@ -1,0 +1,10 @@
+import "tfplan"
+
+main = rule {
+  all tfplan.resources.fakewebservices_server as _, instances {
+    all instances.attributes.type as _, instance_type {
+      instance_type == "t4g.small" or instance_type == "t4g.medium" else
+        fail(sprintf("The instance type must be set to 't4g.small' or 't4g.medium', but it is set to '%s'.", instance_type))
+    }
+  }
+}

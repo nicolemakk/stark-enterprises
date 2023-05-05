@@ -4,6 +4,44 @@ locals {
   cidr_blocks = ["192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "192.0.2.0/24", "198.51.100.0/24"]
 }
 
+resource "tfe_variable" "organization_name_1" {
+  count = 2
+
+  key = "organization_name"
+  value = local.organization_name
+  category = "terraform"
+  workspace_id = tfe_workspace.config_a[count.index].id
+}
+
+resource "tfe_variable" "token_1" {
+  count = 2
+
+  key = "token"
+  value = var.token
+  category = "terraform"
+  sensitive = true
+  workspace_id = tfe_workspace.config_a[count.index].id
+}
+
+resource "tfe_variable" "organization_name_2" {
+  count = 2
+
+  key = "organization_name"
+  value = local.organization_name
+  category = "terraform"
+  workspace_id = tfe_workspace.config_b[count.index].id
+}
+
+resource "tfe_variable" "token_2" {
+  count = 2
+
+  key = "token"
+  value = var.token
+  category = "terraform"
+  sensitive = true
+  workspace_id = tfe_workspace.config_b[count.index].id
+}
+
 resource "tfe_variable" "db_sizes" {
   count = 5
 
@@ -55,10 +93,3 @@ resource "tfe_workspace_variable_set" "config_b" {
   variable_set_id = tfe_variable_set.cluster_vars[count.index + 2].id
   workspace_id = tfe_workspace.config_b[count.index].id
 }
-
-# resource "tfe_workspace_variable_set" "config_c" {
-#   count = 2
-#
-#   variable_set_id = tfe_variable_set[each.value + 2].id
-#   workspace_id = tfe_workspace.config_c[each.value].id
-# }

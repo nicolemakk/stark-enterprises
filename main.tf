@@ -21,6 +21,7 @@ module "workspaces" {
   github_username = var.github_username
   module_ids = module.registry.module_ids
   oauth_token_id = module.vcs.oauth_token_id
+  token = var.token
 }
 
 module "policies" {

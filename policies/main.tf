@@ -13,6 +13,7 @@ resource "tfe_policy" "db_check" {
   organization = local.organization_name
   kind         = "sentinel"
   policy       = file("${path.module}/db-size.sentinel")
+  enforce_mode = "hard-mandatory"
 }
 
 resource "tfe_policy_set" "cluster_validation" {

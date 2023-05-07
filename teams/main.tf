@@ -1,7 +1,7 @@
 resource "tfe_team" "readonly" {
   count = 2
-  name = "Read-Only Team ${count.index+1}"
-  organization = local.organization_name
+  name = "Auditors ${count.index+1}"
+  organization = var.organization_name
   visibility = "organization"
 
   organization_access {
@@ -12,8 +12,8 @@ resource "tfe_team" "readonly" {
 
 resource "tfe_team" "policy_team" {
   count = 2
-  name = "Policy Team ${count.index+1}"
-  organization = local.organization_name
+  name = "Hot Cup Coffee ${count.index+1}"
+  organization = var.organization_name
   visibility = "organization"
 
   organization_access {
@@ -24,8 +24,8 @@ resource "tfe_team" "policy_team" {
 
 resource "tfe_team" "workspaces_team" {
   count = 2
-  name = "Workspaces Team ${count.index+1}"
-  organization = local.organization_name
+  name = "Cordco ${count.index+1}"
+  organization = var.organization_name
   visibility = "organization"
 
   organization_access {
@@ -35,8 +35,8 @@ resource "tfe_team" "workspaces_team" {
 
 resource "tfe_team" "projects_team" {
   count = 2
-  name = "Projects Team ${count.index+1}"
-  organization = local.organization_name
+  name = "Stark Enterprises ${count.index+1}"
+  organization = var.organization_name
   visibility = "organization"
 
   organization_access {
@@ -47,8 +47,8 @@ resource "tfe_team" "projects_team" {
 
 resource "tfe_team" "vcs_team" {
   count = 2
-  name = "VCS Team ${count.index+1}"
-  organization = local.organization_name
+  name = "Barstow Electronics ${count.index+1}"
+  organization = var.organization_name
   visibility = "organization"
 
   organization_access {

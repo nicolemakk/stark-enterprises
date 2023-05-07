@@ -1,66 +1,52 @@
-resource "tfe_workspace" "dummy" {
-  for_each = {
-    detection_response_1 = "detection-response-1",
-    detection_response_2 = "detection-response-2",
-    detection_response_3 = "detection-response-3",
-    team_developer_productivity_1 = "teamdeveloper-productivity-blue"
-    team_developer_productivity_2 = "teamdeveloper-productivity-red",
-    cloud_infra_linode = "cloud-infra-linode",
-    omegastar_service = "omega-star-service",
-    galactus_service = "galactus_service",
-    jarvis = "jarvis"
-  }
+locals {
+  dummy_workspace_names = ["cordco-satellite-1", "cordco-satellite-2", "cordco-satellite-3", "team-developer-productivity-1", "team-developer-productivity-2", "cloud-infra-linode", "omega-star-service", "galactus_service", "jarvis", "barstow-electronics-developer-productivity", "hot-cup-coffee-billing" ]
+  config_c_workspace_names = ["alpha-cordco-testing", "barstow-electronics-cluster", "omega-star-development", "galactus-prod", "infinity-gauntlet"]
+}
 
-  name = each.key
-  organization = local.organization_name
+resource "tfe_workspace" "dummy" {
+  count = length(local.dummy_workspace_names)
+
+  name = local.dummy_workspace_names[count.index]
+  organization = var.organization_name
   auto_apply = false
 }
 
 resource "tfe_workspace" "config_a" {
-  count = 2
+  count = 3
 
-  name = "cordco-${count.index + 1}"
-  organization = local.organization_name
+  name = "accutech-development-${count.index + 1}"
+  organization = var.organization_name
+  auto_apply = true
 
   vcs_repo {
     identifier = "${var.github_username}/config-with-variables"
     oauth_token_id = var.oauth_token_id
   }
-
-  depends_on = [var.module_ids]
 }
 
 resource "tfe_workspace" "config_b" {
   count = 2
 
-  name = "hot-cup-coffee-${count.index + 1}"
-  organization = local.organization_name
+  name = "accutech-research-${count.index + 1}"
+  organization = var.organization_name
+  auto_apply = true
 
   vcs_repo {
-    identifier = "sebasslash/config-with-variables"
+    identifier = "${var.github_username}/config-with-variables"
     oauth_token_id = var.oauth_token_id
   }
-
-  depends_on = [var.module_ids]
 }
 
-resource "tfe_workspace" "accutech" {
-  for_each = {
-    alpha = "alpha"
-    beta = "beta"
-    gamma = "gamma"
-    delta = "delta"
-    epsilon = "epsilon"
-  }
+resource "tfe_workspace" "config_c" {
+  count = 5
 
-  name = "accutech-${each.value}"
-  organization = local.organization_name
+  name = local.config_c_workspace_names[count.index]
+  organization = var.organization_name
+  auto_apply = false
 
   vcs_repo {
-    identifier = "sebasslash/config-to-edit"
+    identifier = "${var.github_username}/config-to-edit"
     oauth_token_id = var.oauth_token_id
   }
-
-  depends_on = [var.module_ids]
 }
 

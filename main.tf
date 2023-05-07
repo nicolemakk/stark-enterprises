@@ -1,11 +1,20 @@
 module "teams" {
   source = "./teams"
+
+  organization_name = var.organization_name
+}
+
+module "projects" {
+  source = "./projects"
+
+  organization_name = var.organization_name
 }
 
 module "vcs" {
   source = "./vcs"
 
   oauth_token = var.github_token
+  organization_name = var.organization_name
 }
 
 module "registry" {
@@ -13,23 +22,22 @@ module "registry" {
 
   github_username = var.github_username
   oauth_token_id = module.vcs.oauth_token_id
+  organization_name = var.organization_name
 }
 
 module "workspaces" {
   source = "./workspaces"
 
   github_username = var.github_username
-  module_ids = module.registry.module_ids
   oauth_token_id = module.vcs.oauth_token_id
   token = var.token
+  organization_name = var.organization_name
+  hostname = var.hostname
 }
 
 module "policies" {
   source = "./policies"
 
-  cluster_validate_workspace_ids = flatten([
-    module.workspaces.config_a_workspace_ids,
-    module.workspaces.config_b_workspace_ids
-  ])
+  organization_name = var.organization_name
 }
 

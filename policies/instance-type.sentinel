@@ -1,10 +1,17 @@
-import "tfplan"
+import "tfplan/v2" as tfplan
 
+allowed_types = [
+    "t4g.small",
+    "t4g.medium",
+]
+
+instances = filter tfplan.resource_changes as _, rc {
+    rc.type is "fakewebservices_server"
+}
+
+# Rule to restrict all instance types to t4g.small and t4g.medium
 main = rule {
-  all tfplan.resources.fakewebservices_server as _, instances {
-    all instances.attributes.type as _, instance_type {
-      instance_type == "t4g.small" or instance_type == "t4g.medium" else
-        fail(sprintf("The instance type must be set to 't4g.small' or 't4g.medium', but it is set to '%s'.", instance_type))
+    all instances as _, instance {
+        instance.change.after.type in allowed_types
     }
-  }
 }

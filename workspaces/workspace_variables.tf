@@ -4,42 +4,27 @@ locals {
   cidr_blocks = ["192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "192.0.2.0/24", "198.51.100.0/24"]
 }
 
-resource "tfe_variable" "organization_name_1" {
-  count = 2
-
-  key = "organization_name"
-  value = local.organization_name
-  category = "terraform"
-  workspace_id = tfe_workspace.config_a[count.index].id
+resource "tfe_variable_set" "global_varset" {
+  name = "Global Hostname DO NOT DELETE"
+  description = "Variable set to configure global hostname"
+  organization = var.organization_name
+  global = true
 }
 
-resource "tfe_variable" "token_1" {
-  count = 2
-
-  key = "token"
-  value = var.token
+resource "tfe_variable" "hostname" {
+  key = "hostname"
+  value = var.hostname
   category = "terraform"
-  sensitive = true
-  workspace_id = tfe_workspace.config_a[count.index].id
+  description = "The hostname to use"
+  variable_set_id = tfe_variable_set.global_varset.id
 }
 
-resource "tfe_variable" "organization_name_2" {
-  count = 2
+resource "tfe_variable_set" "cluster_vars" {
+  count = 5
 
-  key = "organization_name"
-  value = local.organization_name
-  category = "terraform"
-  workspace_id = tfe_workspace.config_b[count.index].id
-}
-
-resource "tfe_variable" "token_2" {
-  count = 2
-
-  key = "token"
-  value = var.token
-  category = "terraform"
-  sensitive = true
-  workspace_id = tfe_workspace.config_b[count.index].id
+  name = "EC2 Cluster Configuration ${count.index + 1}"
+  description = "A set of variables to configure an ec2-cluster module"
+  organization = var.organization_name
 }
 
 resource "tfe_variable" "db_sizes" {
@@ -72,16 +57,22 @@ resource "tfe_variable" "cidr_blocks" {
   variable_set_id = tfe_variable_set.cluster_vars[index(local.cidr_blocks, each.value)].id
 }
 
-resource "tfe_variable_set" "cluster_vars" {
+resource "random_pet" "cluster_name" {
   count = 5
+}
 
-  name = "EC2 Cluster Configuration ${count.index + 1}"
-  description = "A set of variables to configure an ec2-cluster module"
-  organization = local.organization_name
+resource "tfe_variable" "cluster_names" {
+  count = 5 
+  
+  key = "cluster_name"
+  value = random_pet.cluster_name[count.index].id
+  category = "terraform"
+  description = "The name of the EC2 cluster"
+  variable_set_id = tfe_variable_set.cluster_vars[count.index].id
 }
 
 resource "tfe_workspace_variable_set" "config_a" {
-  count = 2
+  count = 3
 
   variable_set_id = tfe_variable_set.cluster_vars[count.index].id
   workspace_id = tfe_workspace.config_a[count.index].id
@@ -92,4 +83,14 @@ resource "tfe_workspace_variable_set" "config_b" {
 
   variable_set_id = tfe_variable_set.cluster_vars[count.index + 2].id
   workspace_id = tfe_workspace.config_b[count.index].id
+}
+
+resource "tfe_variable" "token" {
+  count = 5
+
+  key = "token"
+  value = var.token
+  category = "terraform"
+  sensitive = true
+  workspace_id = tfe_workspace.config_c[count.index].id
 }

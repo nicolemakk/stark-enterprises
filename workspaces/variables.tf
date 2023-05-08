@@ -11,7 +11,12 @@ variable "token" {
   sensitive = true
 }
 
-variable "module_ids" {
-  type = set(string)
-  description = "The set of registry module IDs required to configure workspaces"
+variable "organization_name" {
+  type = string
+  description = "The name of the TFC organization"
+}
+
+variable "hostname" {
+  type = string
+  description = "The hostname to use"
 }

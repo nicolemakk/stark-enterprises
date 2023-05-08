@@ -1,7 +1,7 @@
 terraform {
   cloud {
     hostname = "app.staging.terraform.io"
-    organization = "stark-enterprises"
+    organization = "<INSERT_ORG_NAME_HERE>"
 
     workspaces {
       name = "hq"
@@ -14,6 +14,10 @@ terraform {
 }
 
 provider "tfe" {
-  hostname = "app.staging.terraform.io"
+  hostname = var.hostname
   token = var.token
+}
+
+provider "random" {
+  # Configuration options
 }

@@ -1,10 +1,12 @@
-import "tfplan"
+import "tfplan/v2" as tfplan
 
+databases = filter tfplan.resource_changes as _, rc {
+    rc.type is "fakewebservices_database"
+}
+
+# Rule to check that all database sizes are at least 100GB
 main = rule {
-  all tfplan.resources.fakewebservices_database as _, db {
-    all db.attributes.size as _, db_size {
-      db_size >= 100 else
-        fail(sprintf("The database size must be at least 100GB, but it is set to '%s'.", instance_type))
+    all databases as _, db {
+        db.change.after.size > 100
     }
-  }
 }

@@ -1,7 +1,7 @@
 terraform {
   cloud {
     hostname = "app.staging.terraform.io"
-    organization = "<INSERT_ORG_NAME_HERE>"
+    organization = "nicole-empathy-workshop-test"
 
     workspaces {
       name = "hq"
